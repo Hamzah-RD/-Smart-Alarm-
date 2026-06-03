@@ -18,7 +18,7 @@ class _SplashScreenState extends State<SplashScreen>
   void initState() {
     super.initState();
 
-    // ⭐ ANIMATION CONTROLLER
+    //  ANIMATION CONTROLLER
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1200),
@@ -34,7 +34,7 @@ class _SplashScreenState extends State<SplashScreen>
 
     _controller.forward();
 
-    // ⭐ NAVIGATION AFTER DELAY
+    //  NAVIGATION AFTER DELAY
     Future.delayed(const Duration(seconds: 2), () {
       Navigator.pushReplacement(
         context,

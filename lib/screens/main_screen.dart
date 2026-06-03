@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:smart_alarm_app/screens/stopwatch_screen.dart';
 import 'home_screen.dart';
 import 'activity_screen.dart';
+import 'stopwatch_screen.dart';
 import 'world_clock_screen.dart';
 import '../widgets/bottom_nav.dart';
 
@@ -31,14 +31,18 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true, //  IMPORTANT for modern floating nav look
+
       body: IndexedStack(
         index: currentIndex,
         children: screens,
       ),
 
-      bottomNavigationBar: BottomNav(
-        currentIndex: currentIndex,
-        onTap: onTabChanged,
+      bottomNavigationBar: SafeArea(
+        child: BottomNav(
+          currentIndex: currentIndex,
+          onTap: onTabChanged,
+        ),
       ),
     );
   }
