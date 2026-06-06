@@ -6,11 +6,17 @@ class AlarmTile extends StatelessWidget {
   final String title;
   final bool active;
 
+  // ⭐ ADDED: callbacks for real functionality
+  final VoidCallback? onToggle;
+  final VoidCallback? onDelete;
+
   const AlarmTile({
     super.key,
     required this.time,
     required this.title,
     required this.active,
+    this.onToggle, // ⭐ ADDED
+    this.onDelete, // ⭐ ADDED
   });
 
   @override
@@ -34,7 +40,6 @@ class AlarmTile extends StatelessWidget {
       child: Row(
         children: [
 
-          // LEFT STATUS INDICATOR (NEW)
           Container(
             width: 10,
             height: 10,
@@ -46,7 +51,6 @@ class AlarmTile extends StatelessWidget {
 
           const SizedBox(width: 12),
 
-          // TIME
           Text(
             time,
             style: const TextStyle(
@@ -58,7 +62,6 @@ class AlarmTile extends StatelessWidget {
 
           const SizedBox(width: 16),
 
-          // TITLE
           Expanded(
             child: Text(
               title,
@@ -70,7 +73,6 @@ class AlarmTile extends StatelessWidget {
             ),
           ),
 
-          // STATUS TEXT (NEW)
           Container(
             margin: const EdgeInsets.only(right: 10),
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -90,12 +92,21 @@ class AlarmTile extends StatelessWidget {
             ),
           ),
 
-          // SWITCH
+          // ⭐ FIXED SWITCH
           Switch(
             value: active,
-            onChanged: (v) {},
+            onChanged: (_) {
+              if (onToggle != null) onToggle!(); // ⭐ CONNECTED
+            },
             activeColor: primaryGreen,
           ),
+
+          // ⭐ ADDED DELETE BUTTON
+          if (onDelete != null)
+            IconButton(
+              icon: const Icon(Icons.delete, color: Colors.red),
+              onPressed: onDelete,
+            ),
         ],
       ),
     );

@@ -1,24 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import '../widgets/next_alarm_card.dart';
 import '../widgets/stats_card.dart';
 import '../widgets/alarm_tile.dart';
-import '../widgets/bottom_nav.dart';
+import '../providers/alarm_provider.dart'; // ⭐ ADDED
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+
+    // ⭐ ADDED: PROVIDER CONNECTION
+    final alarmProvider = Provider.of<AlarmProvider>(context);
+
     return Scaffold(
       backgroundColor: const Color(0xffF8FAFC),
-      // ⭐ MODERN SOFT BACKGROUND
-     // bottomNavigationBar: const BottomNav(),
-
-      // floatingActionButton: FloatingActionButton(
-      //   backgroundColor: const Color(0xff22C55E),
-      //   child: const Icon(Icons.add),
-      //   onPressed: () {},
-      // ),
 
       body: Container(
         decoration: const BoxDecoration(
@@ -26,8 +24,8 @@ class HomeScreen extends StatelessWidget {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color(0xffF8FAFC), // light top
-              Color(0xffF8FAFC), // soft bottom
+              Color(0xffF8FAFC),
+              Color(0xffF8FAFC),
             ],
           ),
         ),
@@ -36,12 +34,11 @@ class HomeScreen extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: ListView(
-              children: const [
+              children: [
 
-                SizedBox(height: 12),
+                const SizedBox(height: 12),
 
-                // HEADER
-                Text(
+                const Text(
                   "SUNDAY, 01 JUNE",
                   style: TextStyle(
                     color: Color(0xff6B7280),
@@ -49,9 +46,9 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
 
-                SizedBox(height: 5),
+                const SizedBox(height: 5),
 
-                Text(
+                const Text(
                   "Good Morning, Hamza ☀️",
                   style: TextStyle(
                     fontSize: 22,
@@ -60,15 +57,13 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
 
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
 
-                // NEXT ALARM CARD
-                NextAlarmCard(),
+                const NextAlarmCard(),
 
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
 
-                // STATS ROW
-                Row(
+                const Row(
                   children: [
                     StatsCard(value: "4", label: "Active", icon: Icons.alarm),
                     StatsCard(value: "12", label: "Done", icon: Icons.check),
@@ -80,10 +75,9 @@ class HomeScreen extends StatelessWidget {
                   ],
                 ),
 
-                SizedBox(height: 25),
+                const SizedBox(height: 25),
 
-                // SECTION TITLE
-                Row(
+                const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
@@ -101,26 +95,27 @@ class HomeScreen extends StatelessWidget {
                   ],
                 ),
 
-                SizedBox(height: 15),
+                const SizedBox(height: 15),
 
-                // LIST
-                AlarmTile(
-                  time: "07:00",
-                  title: "Morning Workout",
-                  active: true,
-                ),
-                AlarmTile(
-                  time: "08:30",
-                  title: "Office Reminder",
-                  active: true,
-                ),
-                AlarmTile(
-                  time: "22:00",
-                  title: "Sleep Time",
-                  active: false,
-                ),
+                // ⭐ FIXED: DYNAMIC LIST
+                ...alarmProvider.alarms.map((alarm) {
+                  return AlarmTile(
+                    time: alarm.time.format(context),
+                    title: alarm.label,
+                    active: alarm.isActive,
 
-                SizedBox(height: 20),
+                    // ⭐ CONNECTED ACTIONS
+                    onToggle: () {
+                      alarmProvider.toggleAlarm(alarm.id);
+                    },
+
+                    onDelete: () {
+                      alarmProvider.deleteAlarm(alarm.id);
+                    },
+                  );
+                }).toList(),
+
+                const SizedBox(height: 20),
               ],
             ),
           ),

@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../models/alarm_model.dart';
+import '../providers/alarm_provider.dart';
 import '../theme/theme.dart';
 
 class AddAlarmScreen extends StatefulWidget {
@@ -36,10 +40,8 @@ class _AddAlarmScreenState extends State<AddAlarmScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: const Text(
-          "Add Alarm",
-          style: TextStyle(color: textPrimary),
-        ),
+        title: const Text("Add Alarm",
+            style: TextStyle(color: textPrimary)),
         iconTheme: const IconThemeData(color: textPrimary),
       ),
 
@@ -47,31 +49,20 @@ class _AddAlarmScreenState extends State<AddAlarmScreen> {
         padding: const EdgeInsets.all(16),
         children: [
 
-          // ⭐ TIME CARD (HERO INPUT)
+          // ⭐ TIME CARD
           Container(
             padding: const EdgeInsets.all(18),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(20),
               border: Border.all(color: borderColor),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.04),
-                  blurRadius: 12,
-                )
-              ],
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
 
-                const Text(
-                  "Alarm Time",
-                  style: TextStyle(
-                    color: textSecondary,
-                    fontSize: 12,
-                  ),
-                ),
+                const Text("Alarm Time",
+                    style: TextStyle(color: textSecondary, fontSize: 12)),
 
                 const SizedBox(height: 10),
 
@@ -89,13 +80,10 @@ class _AddAlarmScreenState extends State<AddAlarmScreen> {
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: primaryGreen,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
                   ),
                   onPressed: pickTime,
                   child: const Text("Change Time",
-                      style: TextStyle(fontSize: 11,color: Colors.white),),
+                      style: TextStyle(color: Colors.white)),
                 ),
               ],
             ),
@@ -103,7 +91,7 @@ class _AddAlarmScreenState extends State<AddAlarmScreen> {
 
           const SizedBox(height: 20),
 
-          // ⭐ LABEL CARD
+          // ⭐ LABEL
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
@@ -122,9 +110,9 @@ class _AddAlarmScreenState extends State<AddAlarmScreen> {
 
           const SizedBox(height: 20),
 
-          // ⭐ CHALLENGES CARD
+          // ⭐ CHALLENGES
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 10),
+            padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(20),
@@ -134,23 +122,23 @@ class _AddAlarmScreenState extends State<AddAlarmScreen> {
               children: [
 
                 CheckboxListTile(
-                  activeColor: primaryGreen,
                   title: const Text("Math Challenge"),
                   value: mathChallenge,
+                  activeColor: primaryGreen,
                   onChanged: (v) => setState(() => mathChallenge = v!),
                 ),
 
                 CheckboxListTile(
-                  activeColor: primaryGreen,
                   title: const Text("Photo Challenge"),
                   value: photoChallenge,
+                  activeColor: primaryGreen,
                   onChanged: (v) => setState(() => photoChallenge = v!),
                 ),
 
                 CheckboxListTile(
-                  activeColor: primaryGreen,
                   title: const Text("Selfie Challenge"),
                   value: selfieChallenge,
+                  activeColor: primaryGreen,
                   onChanged: (v) => setState(() => selfieChallenge = v!),
                 ),
               ],
@@ -158,19 +146,41 @@ class _AddAlarmScreenState extends State<AddAlarmScreen> {
           ),
 
           const SizedBox(height: 30),
+
+          // ⭐ SAVE BUTTON (FULLY FIXED)
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: primaryGreen,
               minimumSize: const Size(double.infinity, 55),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              elevation: 5,
             ),
-            onPressed: () {},
+
+            onPressed: () {
+              final provider =
+              Provider.of<AlarmProvider>(context, listen: false);
+
+              provider.addAlarm(
+                AlarmModel(
+                  id: DateTime.now()
+                      .millisecondsSinceEpoch
+                      .toString(),
+
+                  time: selectedTime,
+                  label: labelController.text.isEmpty
+                      ? "Alarm"
+                      : labelController.text,
+
+                  mathChallenge: mathChallenge,
+                  photoChallenge: photoChallenge,
+                  selfieChallenge: selfieChallenge,
+                ),
+              );
+
+              Navigator.pop(context);
+            },
+
             child: const Text(
               "Save Alarm",
-              style: TextStyle(fontSize: 16,color: Colors.white),
+              style: TextStyle(color: Colors.white),
             ),
           ),
         ],

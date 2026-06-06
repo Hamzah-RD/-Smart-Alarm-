@@ -1,24 +1,52 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/data/latest.dart' as tzdata;
 
 class NotificationService {
-  static final  FlutterLocalNotificationsPlugin _plugin =
+  static final FlutterLocalNotificationsPlugin _plugin =
   FlutterLocalNotificationsPlugin();
+
   static Future init() async {
-    const android =AndroidInitializationSettings('@mipmap/ic_launche');
-    const settings=InitializationSettings(android: android);
+    tzdata.initializeTimeZones(); // ⭐ IMPORTANT
+
+    const android = AndroidInitializationSettings('@mipmap/ic_launcher');
+
+    const settings = InitializationSettings(android: android);
+
     await _plugin.initialize(settings);
   }
-  static Future showAlarmNotification(String title) async {
-    const androidDetails = AndroidNotificationDetails(
-      'alarm_channel',
-      'Alarm Notifications',
-      importance: Importance.max,
-      priority: Priority.high,
-      playSound: true,
+
+  // ⭐ SCHEDULE ALARM
+  static Future scheduleAlarm({
+    required int id,
+    required DateTime dateTime,
+    required String title,
+  }) async {
+    await _plugin.zonedSchedule(
+      id,
+      title,
+      "Wake up! Your alarm is ringing 🔔",
+      tz.TZDateTime.from(dateTime, tz.local),
+
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'alarm_channel',
+          'Alarms',
+          importance: Importance.max,
+          priority: Priority.high,
+          playSound: true,
+        ),
+      ),
+
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      uiLocalNotificationDateInterpretation:
+      UILocalNotificationDateInterpretation.absoluteTime,
+
+      matchDateTimeComponents: null,
     );
+  }
 
-    const details = NotificationDetails(android: androidDetails);
-
-    await _plugin.show(0, title, "Wake up!", details);
+  static Future cancel(int id) async {
+    await _plugin.cancel(id);
   }
 }

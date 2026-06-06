@@ -1,50 +1,33 @@
+import 'package:flutter/material.dart';
+
 class AlarmModel {
+  DateTime getDateTime() {
+    final now = DateTime.now();
+
+    return DateTime(
+      now.year,
+      now.month,
+      now.day,
+      time.hour,
+      time.minute,
+    );
+  }
   String id;
-  int hour;
-  int minute;
+  TimeOfDay time;
   String label;
-  bool isEnabled;
+  bool isActive;
 
   bool mathChallenge;
-  bool readyPhotoChallenge;
+  bool photoChallenge;
   bool selfieChallenge;
 
   AlarmModel({
     required this.id,
-    required this.hour,
-    required this.minute,
+    required this.time,
     required this.label,
-    this.isEnabled = true,
+    this.isActive = true,
     this.mathChallenge = false,
-    this.readyPhotoChallenge = false,
+    this.photoChallenge = false,
     this.selfieChallenge = false,
   });
-
-  //  Convert object → Map (for storage)
-  Map<String, dynamic> toMap() {
-    return {
-      "id": id,
-      "hour": hour,
-      "minute": minute,
-      "label": label,
-      "isEnabled": isEnabled,
-      "mathChallenge": mathChallenge,
-      "readyPhotoChallenge": readyPhotoChallenge,
-      "selfieChallenge": selfieChallenge,
-    };
-  }
-
-  // Convert Map → object (for loading)
-  factory AlarmModel.fromMap(Map data) {
-    return AlarmModel(
-      id: data["id"],
-      hour: data["hour"],
-      minute: data["minute"],
-      label: data["label"],
-      isEnabled: data["isEnabled"] ?? true,
-      mathChallenge: data["mathChallenge"] ?? false,
-      readyPhotoChallenge: data["readyPhotoChallenge"] ?? false,
-      selfieChallenge: data["selfieChallenge"] ?? false,
-    );
-  }
 }
